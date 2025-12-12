@@ -1,0 +1,231 @@
+{
+  "name": "Email Schedule",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "27787f04-c4ee-47d5-8f2e-229899bd0f04",
+      "name": "When chat message received",
+      "webhookId": "9806a97c-1285-435d-a8e5-56abe8275fcd"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are my personal AI assistant inside n8n.\nAct directly on what I ask; do NOT say “I understand” or ask unnecessary questions.\n\nTOOLS YOU CAN USE\n1) Google Calendar (READ / WRITE)\n   – Purpose: Look up, summarize, create, update, or delete events in my Google Calendar.\n   – Use it whenever I ask about:\n       • events, schedule, calendar\n       • finding availability for a date/time or range\n       • adding, editing, or deleting meetings\n       • finding free time slots\n   – Tool actions available:\n       • Get events\n       • Create event\n       • Update event\n       • Delete event\n   – Output style:\n       • Clear summaries of events (time → title → description)\n       • When creating/updating events → give a short confirmation\n       • When reading events → give a clean, simple list\n\nGENERAL BEHAVIOR\n– Be concise and action-oriented.\n– If information is missing, say what’s missing and make a reasonable assumption.\n– Do NOT invent facts. If no events are found, say so clearly.\n– Dates & times:\n     • Use my local timezone unless I specify otherwise.\n     • Convert natural phrases (“tomorrow”, “next Monday”, “evening”) into exact dates/times.\n– If multiple events match a request, choose the closest match. Ask for clarification only if necessary.\n– Maintain privacy: summarize event details unless I request specifics.\n– Always choose the correct Google Calendar tool automatically. Never ask me which tool to use.\n\nEXAMPLES OF WHEN TO USE THE TOOL\n– “What events do I have tomorrow?” → Get events\n– “Add a meeting tomorrow at 5 PM.” → Create event\n– “Reschedule my dentist appointment to next Tuesday.” → Update event\n– “Delete my call with John on Friday.” → Delete event\n– “Am I free between 2–4 PM today?” → Get events + check availability\n\nOUTPUT FORMAT\n• For event summaries → Date, Time, Title, (optional: location, description)\n• For confirmations → “Event created.” / “Event updated.” / “Event deleted.”\n\nDO NOTS\n– Don’t claim you changed anything unless you actually used a Calendar tool.\n– Don’t ask for confirmation unnecessarily.\n– Don’t output long explanations unless I request them.\n\nYour job is to understand my natural language and convert it into the correct Google Calendar action.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "20d57a79-b9b8-4653-b3a1-9f22baa46f54",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        192,
+        240
+      ],
+      "id": "63dd9e5f-f686-4fd4-b01a-51288cc741fd",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kz1eCblwSDKfoNXA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        224
+      ],
+      "id": "b17ea062-c957-4319-a344-61be2ee6fab4",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        224
+      ],
+      "id": "4915aaa7-17b5-4fa8-91a8-7dca14787e1b",
+      "name": "Read mail",
+      "webhookId": "57cc9fa4-e7a1-4ada-be91-92cde58eb0e4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9U5J6oTNo0D2XSog",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1ahdr4EG9aNNI04pLwY-zO5ElBjjnVKd6x7gH4_oCa1I/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ahdr4EG9aNNI04pLwY-zO5ElBjjnVKd6x7gH4_oCa1I/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        672,
+        224
+      ],
+      "id": "c8266c01-34db-4675-817b-f59c1e5b4b5a",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "JPxDEdespnX2Vmot",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "chiliveriyashwanth322@gmail.com",
+          "mode": "list",
+          "cachedResultName": "chiliveriyashwanth322@gmail.com"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        832,
+        208
+      ],
+      "id": "03a5d259-e104-4ef2-89b2-3f9df9364c54",
+      "name": "Get many events in Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "5DeVwNU2MijKFOCG",
+          "name": "Google Calendar account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read mail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many events in Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "90eaa8f9-0785-4c29-9aaa-69200c9128d8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b249cfdb3f85a369a0ad499e4aa1eab97045dedb355baf604195b1c13320f1ad"
+  },
+  "id": "MJWCVs7O0psIEnuu",
+  "tags": [
+    {
+      "updatedAt": "2025-12-07T05:13:52.640Z",
+      "createdAt": "2025-12-07T05:13:52.640Z",
+      "id": "BOO8TEDBitnVlvyf",
+      "name": "Myforthflow"
+    }
+  ]
+}

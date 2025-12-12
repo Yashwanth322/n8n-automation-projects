@@ -1,0 +1,154 @@
+{
+  "name": "AI Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f1556f46-2b77-468d-9b53-90689321227c",
+      "name": "When chat message received",
+      "webhookId": "e58c7f71-7e66-4260-80fc-f3e44ce76a43"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "= what is does and how to use it \n\nNote: Output should not exceed 100 words"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "420031a1-8964-4377-a52d-7a8b7a5100fd",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "417903f4-b72f-4148-96ee-0d5d99ae5354",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kz1eCblwSDKfoNXA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "options": {
+          "systemMessage": "=Your task is to find and analyze the top competitors for the given business or industry.\nFor each competitor, extract and provide the following details in a clean table format:\n\n1. Competitor Name\n2. Official Website URL\n3. Annual Revenue (approx., with year)\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        560,
+        0
+      ],
+      "id": "e568d8ff-ef4f-4d25-a6ad-8ada62010c7b",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        432,
+        208
+      ],
+      "id": "87eb4863-48ec-4fb2-9955-95c6418c8723",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kz1eCblwSDKfoNXA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "880842b6-7fdd-447f-aeee-07cf9f92c53a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b249cfdb3f85a369a0ad499e4aa1eab97045dedb355baf604195b1c13320f1ad"
+  },
+  "id": "Bqpjr4bOEd0kTlmQ",
+  "tags": [
+    {
+      "updatedAt": "2025-11-27T09:04:50.112Z",
+      "createdAt": "2025-11-27T09:04:50.112Z",
+      "id": "F9FvjkOHyD8dIPR4",
+      "name": "Mysecondflow"
+    }
+  ]
+}
